@@ -1,5 +1,32 @@
-# Ignorar arquivos grandes e objetos do Git
-.git/objects/0b/13ac077538158a65815800bfed117d9a90383a
-pdf_documents/.ipynb_checkpoints/EIA_Example4-checkpoint.pdf
-pdf_documents/EIA_Example4.pdf
-pdf_documents/.ipynb_checkpoints/*.pdf
+# Ignorar arquivos do sistema de controle de versão
+.git/
+
+# Ignorar diretórios e arquivos gerados pelo Jupyter
+.ipynb_checkpoints/
+
+# Ignorar a pasta de pdf_documents e todos os seus arquivos
+pdf_documents/
+
+# Ignorar arquivos PDF dentro de pdf_documents
+pdf_documents/*.pdf
+
+# Ignorar ambientes virtuais
+venv/
+venv311/
+
+# Ignorar arquivos de cache do Python
+__pycache__/
+*.pyc
+
+# Ignorar arquivos temporários do sistema operacional
+*~
+*.swp
+
+# Ignorar arquivos de logs
+*.log
+
+# Ignorar arquivos de configuração específicos do editor (por exemplo, do VSCode)
+.vscode/
+
+# Ignorar arquivos de cache do pip
+pip-wheel-metadata/
