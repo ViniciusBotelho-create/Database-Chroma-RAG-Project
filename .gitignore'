@@ -1,0 +1,3 @@
+# Ignorar arquivos grandes
+pdf_documents/.ipynb_checkpoints/*
+*.pdf
