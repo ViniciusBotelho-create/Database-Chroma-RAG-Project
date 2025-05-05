@@ -1,0 +1,38 @@
+305000 “306000 Ê MAPA CARACTERIZANDO A
+
+AID - ÁREA DE INFLUÊNCIA DIRETA
+LEGENDA
+
+O Empreendimento
+
+Córregos Sem Denominação
+Raio de 1000 metros
+
+Área Industrial
+
+Culturas semi perenis
+Pastagem
+
+Solo Exposto
+
+Vegetação Nativa
+
+Zona Urbana Residencial
+
+LI]
+LI]
+ES
+DJ
+LI]
+LI]
+
+Google Hybrid Satellite
+
+Sistema de Coordenadas
+
+datum: SIRGAS 2000.
+Fonte da base cartográfica: IBGE,
+2021
+Elaboração: Yuri Augusto Nogueira
+Data: 02/10/2024
+

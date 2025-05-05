@@ -1,0 +1,18 @@
+JAGUARIÚNA
+
+Oliver=:
+
+Legenda:
+DD) Pedreira
+Municípios do Estado de São Paulo
+DD Estado de São Paulo
+CL] Estados do Brasil
+CO Brasa
+Inventário Florestal:
+HM Formação Pioneira com Influência Fiuvial
+[7 Fioresta Estacional Semidecidual
+IE Floresta Ombrófila Densa
+[EB Outros
+
+Fonte: IBGE
+

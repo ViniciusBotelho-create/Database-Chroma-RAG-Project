@@ -1,3 +1,4 @@
+# Processamento de texto e LLMs
 chromadb
 PyMuPDF
 sentence-transformers
@@ -8,6 +9,16 @@ openai
 langchain-community
 pymongo
 langgraph
+
+# Visão computacional e processamento de imagens
+torch
+torchvision
+Pillow
+transformers
+accelerate  # opcional, mas recomendado para melhor performance com modelos grandes
+rasterio
+geopandas
+matplotlib
+
 # Após instalar as dependências, execute:
 # python -m spacy download pt_core_news_sm
-

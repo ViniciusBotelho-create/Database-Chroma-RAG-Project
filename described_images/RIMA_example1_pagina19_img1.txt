@@ -1,0 +1,13 @@
+TEA SI
+UN:
+
+“306000
+
+MAPA DA SUB-BACIA HIDROGRÁFICA E
+BASE CARTOGRÁFICA DO IBGE
+
+is
+datum: SIRGAS 2000.
+Fonte da base cartográfica: IBGE.
+Elaboração: Yuri Augusto Nogunira
+Data: 02/10/2026
