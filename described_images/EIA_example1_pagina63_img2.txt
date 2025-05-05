@@ -1,0 +1,39 @@
+305000 306000 MAPA DE USO DO SOLO AO ENTORNO
+
+DO EMPREENDIMENTO
+LEGENDA
+
+O Empreendimento
+
+Córregos Sem Denominação
+Raio de 1000 metros
+
+Área Industrial
+
+Culturas semi perenis
+Pastagem
+
+Solo Exposto
+
+Vegetação Nativa
+
+[]
+LI]
+DJ
+E]
+LI]
+LI]
+
+Zona Urbana Residencial
+
+Google Hybrid Satellite
+
+Sistema de Coordenadas
+UTM,
+datum: SIRGAS 2000.
+Fonte da base cartográfica: IBGE,
+2021
+Elaboração: Yuri Augusto Nogueira
+Data: 06/09/2024
+
+305000 306000
