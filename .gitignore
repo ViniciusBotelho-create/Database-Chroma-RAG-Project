@@ -30,3 +30,6 @@ __pycache__/
 
 # Ignorar arquivos de cache do pip
 pip-wheel-metadata/
+
+#ignorar a pasta anaconda_projects
+anaconda_projects/
