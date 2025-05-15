@@ -33,3 +33,5 @@ pip-wheel-metadata/
 
 #ignorar a pasta anaconda_projects
 anaconda_projects/
+#ignorar a pasta anaconda_projects
+anaconda_projects/db/
