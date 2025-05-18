@@ -45,6 +45,7 @@ class ChatState(TypedDict):
     image_context: str
     answer: str
     validation: str
+    show_context: str
 
 # Agente de busca textual
 def retrieve_text_context(state: ChatState) -> ChatState:
@@ -59,21 +60,19 @@ def retrieve_text_context(state: ChatState) -> ChatState:
         result["source_file"] + "_chunk_" + str(result["chunk_index"])
         for result in results["metadatas"][0]
     ]
-
+    
+    show_context = []
     chunks_text = []
     for chunk_id in chunk_ids:
         chunk = mongo_chunks.find_one({"chunk_id": chunk_id})
         if chunk:
             chunks_text.append(chunk["chunk_text"])
-            print("Contexto retirado do documento:")
-            print(chunk["pdf_file"])
-            print("Link para o documento:")
-            print(chunk["source_url"])
-
+            show_context.append(f"\nContexto retirado do documento: {chunk['pdf_file']}\nLink para o documento: {chunk['source_url']}")
     return {
         **state,
         "query": query,
-        "context": "\n\n".join(chunks_text)
+        "context": "\n\n".join(chunks_text),
+        "show_context": "\n\n".join(show_context)
     }
 
 # Agente de busca de contexto por imagens relacionadas à query
@@ -93,20 +92,22 @@ def retrieve_image_context(state: ChatState) -> ChatState:
     ids = results["ids"][0]
     distances = results["distances"][0]
     image_contexts = []
+    show_context = state.get("show_context", "")
     for id_, distance in zip(ids, distances):
         if distance < 0.65:
             # Recuperar o ID encontrado
             image_doc = mongo_images.find_one({"id": id_})
             if image_doc:
                 image_contexts.append(image_doc["url"])
-                print(f"Possível imagem relacionada: {image_doc["url"]}")
+                show_context += f"\nPossível imagem relacionada (distância {distance}): {image_doc["url"]}"
         else:
-            print("Não foram encontradas imagens relevantes")
+            show_context += "\nNão foram encontradas imagens relevantes."
 
 
     return {
         **state,
-        "image_context": "\n\n".join(image_contexts)
+        "image_context": "\n\n".join(image_contexts),
+        "show_context": show_context.strip()
     }
 
 
@@ -212,7 +213,7 @@ builder.add_edge("validator", END)
 graph = builder.compile()
 
 
-# Função get_response
+# Função para obter a resposta e o contexto
 def get_response(query: str) -> str:
     state = {
         "input": query,
@@ -220,8 +221,11 @@ def get_response(query: str) -> str:
         "context": "",
         "image_context": "",
         "answer": "",
-        "validation": ""
+        "validation": "",
+        "show_context": ""
     }
 
     result = graph.invoke(state)
-    return result["answer"]
+
+    # Retorna a resposta e o contexto
+    return result["answer"], result["show_context"]
