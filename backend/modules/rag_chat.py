@@ -5,7 +5,7 @@ import os
 from pymongo import MongoClient
 from chromadb.config import Settings
 from openai import OpenAI
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import MessageGraph
 from typing import TypedDict, Annotated
@@ -16,7 +16,8 @@ from sentence_transformers import SentenceTransformer
 #conexões com os bancos de dados
 
 # Conexão com o ChromaClient Persistente
-chroma_client = chromadb.PersistentClient(path=r"C:\Users\vinic\Documents\GitHub\Database-Chroma-RAG-Project\backend\chroma_db")
+chroma_path = os.path.abspath("./chroma_db")
+chroma_client = chromadb.PersistentClient(path=chroma_path)
 
 # Chave da API da openai
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -98,8 +99,10 @@ def retrieve_image_context(state: ChatState) -> ChatState:
             # Recuperar o ID encontrado
             image_doc = mongo_images.find_one({"id": id_})
             if image_doc:
-                image_contexts.append(image_doc["url"])
-                show_context += f"\nPossível imagem relacionada (distância {distance}): {image_doc["url"]}"
+                image_link = image_doc['url']
+                image_contexts.append(image_link)
+                show_context += f"\nPossível imagem relacionada (distância {distance}): {image_link}"     
+
         else:
             show_context += "\nNão foram encontradas imagens relevantes."
 

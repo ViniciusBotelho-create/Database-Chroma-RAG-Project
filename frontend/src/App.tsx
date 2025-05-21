@@ -23,7 +23,6 @@ function App() {
       text: question,
       sender: "user",
     };
-
     // Adiciona a mensagem do usuário ao array
     setMessages((prev) => [...prev, userMessage]);
 
