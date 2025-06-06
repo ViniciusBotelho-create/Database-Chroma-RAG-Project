@@ -1,0 +1,23 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --sidebar-bg: #f0f0f0;
+  --input-bg: #eeeeee;
+  --message-bg: #dddddd;
+  --text-muted: #999;
+
+  /* ✅ Adicione isso */
+  --border-color: #cccccc;
+}
+
+[data-theme="dark"] {
+  --bg-color: #0f0f0f;
+  --text-color: #ffffff;
+  --sidebar-bg: #2F4F4F;
+  --input-bg: #1f1f1f;
+  --message-bg: #2b2b2b;
+  --text-muted: #888;
+
+  /* ✅ Adicione isso também */
+  --border-color: #444444;
+}

@@ -1,0 +1,26 @@
+.chat-page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden; /* Impede scroll geral */
+}
+
+.chat-window-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  overflow: hidden; /* Remove scroll lateral */
+}
+
+/* Estilização da janela de mensagens */
+.chat-window {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 20px;
+  scrollbar-width: none; /* Firefox */
+}
+
+.chat-window::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}

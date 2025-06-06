@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat EIA/RIMA</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistente EIA/RIMA</title>
+    
+    <!-- Fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Importando seu CSS (ajuste o caminho conforme sua pasta) -->
+    <link rel="stylesheet" href="/src/styles/Chat.css" />
   </head>
   <body>
-    <div class="container">
-      <h1 class="chat-title">Chat sobre EIA/RIMA</h1>
-
-      <div id="responseArea" class="chat-window"></div>
-
-      <div class="input-group">
-        <input type="text" id="userInput" placeholder="Digite sua pergunta aqui..." class="text-input">
-        <button id="submitBtn" class="submit-button">Enviar</button>
-      </div>
-    </div>
-
-    <script src="/js/app.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
