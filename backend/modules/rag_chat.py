@@ -80,38 +80,40 @@ def retrieve_text_context(state: ChatState) -> ChatState:
 def retrieve_image_context(state: ChatState) -> ChatState:
     query = state["input"]
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    
     query_embedding = embedding_model.encode(query).tolist()
 
-    # Realizar a busca no ChromaDB
     results = image_collection.query(
         query_embeddings=[query_embedding],
         n_results=5
     )
 
-    # IDs e distâncias retornadas
     ids = results["ids"][0]
     distances = results["distances"][0]
+
     image_contexts = []
+    image_links = []
     show_context = state.get("show_context", "")
+
     for id_, distance in zip(ids, distances):
         if distance < 0.65:
-            # Recuperar o ID encontrado
             image_doc = mongo_images.find_one({"id": id_})
             if image_doc:
-                image_link = image_doc['url']
-                image_contexts.append(image_link)
-                show_context += f"\nPossível imagem relacionada (distância {distance}): {image_link}"     
+                image_url = image_doc.get("url")
+                if image_url:
+                    image_contexts.append(image_url)
+                    image_links.append(image_url)
 
-        else:
-            show_context += "\nNão foram encontradas imagens relevantes."
-
+    if image_links:
+        show_context += "\n\n" + "\n".join(image_links)
+    else:
+        show_context += "\n\nNão foram encontradas imagens relevantes."
 
     return {
         **state,
         "image_context": "\n\n".join(image_contexts),
         "show_context": show_context.strip()
     }
+
 
 
 # Agente que gera a resposta usando OpenAI
