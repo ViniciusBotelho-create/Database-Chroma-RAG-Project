@@ -55,7 +55,7 @@ const ChatPage: React.FC = () => {
       if (context) {
         const contextMessage: Message = {
           id: crypto.randomUUID(),
-          content: `🔍 *Contexto usado:*\n${context}`,
+          content: `*Contexto usado:*\n${context}`,
           role: "assistant",
         };
         setMessages((prev) => [...prev, contextMessage]);
@@ -65,7 +65,7 @@ const ChatPage: React.FC = () => {
       console.error(error);
       const errorMessage: Message = {
         id: crypto.randomUUID(),
-        content: "❌ Erro ao se comunicar com o servidor.",
+        content: "Erro ao se comunicar com o servidor.",
         role: "assistant",
       };
       setMessages((prev) => [...prev, errorMessage]);

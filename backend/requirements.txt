@@ -1,0 +1,34 @@
+# Processamento de texto e LLMs
+chromadb
+PyMuPDF
+sentence-transformers
+spacy
+langchain
+langchain-openai
+openai
+langchain-community
+pymongo
+langgraph
+ipykernel
+
+
+# Visão computacional e processamento de imagens
+torch
+torchvision
+Pillow
+transformers
+accelerate  # opcional, mas recomendado para melhor performance com modelos grandes
+rasterio
+geopandas
+matplotlib
+pytesseract
+easyocr
+
+#Para criação da API e integração com o frontend
+fastapi
+uvicorn[standard]
+chromadb
+python-dotenv
+
+# Após instalar as dependências, execute:
+# python -m spacy download pt_core_news_sm
