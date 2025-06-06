@@ -1,0 +1,43 @@
+.prompt-input {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: transparent;
+  border-top: 1px solid var(--border-color);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  backdrop-filter: blur(8px); /* opcional para dar um efeito leve de vidro */
+}
+
+.prompt-input input {
+  flex: 1;
+  max-width: 800px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+.prompt-input input::placeholder {
+  color: var(--text-muted);
+}
+
+.prompt-input button {
+  margin-left: 10px;
+  padding: 12px 20px;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--text-color);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.prompt-input button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
