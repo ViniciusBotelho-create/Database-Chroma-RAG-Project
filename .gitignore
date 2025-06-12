@@ -91,3 +91,6 @@ __pycache__/
 
 # Ignorar arquivos JAR
 *.jar
+
+# Ignorar os arquivos temporários
+backend/notebooks/temp_pdfs/
