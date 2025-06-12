@@ -11,6 +11,7 @@
   background-color: var(--bg-color);
   color: var(--text-color);
   overflow: hidden; /* Remove scroll lateral */
+  font-family: 'Segoe UI', sans-serif;
 }
 
 /* Estilização da janela de mensagens */

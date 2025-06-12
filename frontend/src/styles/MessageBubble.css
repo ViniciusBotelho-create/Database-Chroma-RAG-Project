@@ -1,9 +1,9 @@
 .message-bubble {
-  max-width: 80%;
+  max-width: 49%;
   margin: 12px auto;
   display: flex;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 25px;
   line-height: 1.6;
   font-size: 16px;
   white-space: pre-wrap;

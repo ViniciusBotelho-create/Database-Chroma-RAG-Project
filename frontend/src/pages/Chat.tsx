@@ -13,10 +13,11 @@ interface Message {
 
 const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [firstMessageSent, setFirstMessageSent] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = async (text: string) => {
-    if (!text.trim()) return;
+  const handleSend = async(text: string) => {
+    if (!firstMessageSent) setFirstMessageSent(true);
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -90,7 +91,11 @@ const ChatPage: React.FC = () => {
         <div className="chat-window" ref={chatRef}>
           <ChatWindow messages={messages} />
         </div>
-        <PromptInput onSend={handleSend} onAfterSendScroll={scrollToBottom} />
+        <PromptInput
+          onSend={handleSend}
+          onAfterSendScroll={scrollToBottom}
+          firstMessageSent={firstMessageSent}
+        />
       </div>
     </div>
   );

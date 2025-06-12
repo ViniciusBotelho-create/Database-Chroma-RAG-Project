@@ -83,3 +83,11 @@ node_modules/
 __pycache__/
 .env
 
+
+# Ignorar banco de dados e arquivos gerados pelo ChromaDB
+**/chroma_db/
+*.bin
+*.pickle
+
+# Ignorar arquivos JAR
+*.jar

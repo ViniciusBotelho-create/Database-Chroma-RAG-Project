@@ -5,9 +5,14 @@ import "../styles/PromptInput.css";
 interface PromptInputProps {
   onSend: (text: string) => void;
   onAfterSendScroll: () => void;
+  firstMessageSent: boolean;
 }
 
-const PromptInput: React.FC<PromptInputProps> = ({ onSend, onAfterSendScroll }) => {
+const PromptInput: React.FC<PromptInputProps> = ({
+  onSend,
+  onAfterSendScroll,
+  firstMessageSent,
+}) => {
   const [input, setInput] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -20,7 +25,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ onSend, onAfterSendScroll }) 
   };
 
   return (
-    <div className="prompt-input">
+    <div className={`prompt-input ${firstMessageSent ? "bottom" : "center"}`}>
       <form onSubmit={handleSubmit}>
         <input
           type="text"

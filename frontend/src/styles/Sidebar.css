@@ -9,6 +9,7 @@
     justify-content: space-between;
     box-sizing: border-box;
     padding: 0.5rem 0.4rem;
+    font-family: 'Segoe UI', sans-serif;
   }
   
   .sidebar.open {
