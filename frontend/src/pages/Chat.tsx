@@ -29,7 +29,7 @@ const ChatPage: React.FC = () => {
     scrollToBottom();
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/ask", {
+      const res = await fetch("http://localhost:8000/ask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

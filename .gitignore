@@ -1,96 +1,50 @@
-# Ignorar arquivos do sistema de controle de versão
+# --- Sistema ---
 .git/
-
-# Ignorar diretórios e arquivos gerados pelo Jupyter
-.ipynb_checkpoints/
-
-# Ignorar a pasta de documentos PDF
-pdf_documents/
-pdf_documents/*.pdf
-
-# Ignorar ambientes virtuais
-venv/
-venv311/
-
-# Ignorar arquivos de cache do Python
-__pycache__/
-*.pyc
-
-# Ignorar arquivos temporários do sistema operacional
+*.log
 *~
 *.swp
 
-# Ignorar arquivos de logs
-*.log
-
-# Ignorar arquivos de configuração específicos do editor (por exemplo, do VSCode)
-.vscode/
-
-# Ignorar arquivos de cache do pip
-pip-wheel-metadata/
-
-# Ignorar a pasta anaconda_projects e subpastas
-anaconda_projects/
-anaconda_projects/db/
-
-# Ignorar arquivos temporários e bancos locais
-backend/temp/
-backend/chroma_db/
-chromadb/
-# Ignorar arquivos do sistema de controle de versão
-.git/
-
-# Ignorar diretórios e arquivos gerados pelo Jupyter
-.ipynb_checkpoints/
-
-# Ignorar a pasta de pdf_documents e todos os seus arquivos
-pdf_documents/
-
-# Ignorar arquivos PDF dentro de pdf_documents
-pdf_documents/*.pdf
-
-# Ignorar ambientes virtuais
-venv/
-venv311/
-
-# Ignorar arquivos de cache do Python
+# --- Python ---
 __pycache__/
 *.pyc
-
-# Ignorar arquivos temporários do sistema operacional
-*~
-*.swp
-
-# Ignorar arquivos de logs
-*.log
-
-# Ignorar arquivos de configuração específicos do editor (por exemplo, do VSCode)
-.vscode/
-
-# Ignorar arquivos de cache do pip
-pip-wheel-metadata/
-
-#ignorar a pasta anaconda_projects
-anaconda_projects/
-#ignorar a pasta anaconda_projects
-anaconda_projects/db/
+*.pyo
+*.pyd
 *.db
-*.zip
-*.mp4
-*.csv
-*.pt
-node_modules/
-__pycache__/
-.env
-
-
-# Ignorar banco de dados e arquivos gerados pelo ChromaDB
-**/chroma_db/
-*.bin
+*.sqlite3
 *.pickle
+*.bin
+*.pt
 
-# Ignorar arquivos JAR
-*.jar
+# --- Virtualenv ---
+venv/
+venv311/
+.env
+pip-wheel-metadata/
 
-# Ignorar os arquivos temporários
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- PDFs e documentos ---
+pdf_documents/
+*.pdf
 backend/notebooks/temp_pdfs/
+
+# --- Node / React ---
+node_modules/
+dist/
+build/
+.cache/
+
+# --- IDEs / Editores ---
+.vscode/
+.idea/
+
+# --- Projetos Anaconda ---
+anaconda_projects/
+anaconda_projects/db/
+
+# --- ChromaDB ---
+**/chroma_db/
+chromadb/
+backend/temp/
+*.sqlite3
