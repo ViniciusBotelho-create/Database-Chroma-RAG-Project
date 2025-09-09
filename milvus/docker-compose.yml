@@ -1,0 +1,44 @@
+version: "3.5"
+
+services:
+  etcd:
+    image: bitnami/etcd:latest
+    container_name: milvus-etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    networks:
+      - milvus-network
+    ports:
+      - "2379:2379"
+
+  minio:
+    image: minio/minio:latest
+    container_name: milvus-minio
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    command: server /data
+    networks:
+      - milvus-network
+    ports:
+      - "9000:9000"
+
+  milvus-standalone:
+    image: milvusdb/milvus:v2.6.1
+    container_name: milvus-standalone
+    command: ["milvus", "run", "standalone"]
+    environment:
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+    depends_on:
+      - etcd
+      - minio
+    networks:
+      - milvus-network
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+
+networks:
+  milvus-network:
+    driver: bridge
