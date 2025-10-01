@@ -16,7 +16,7 @@ const ChatPage: React.FC = () => {
   const [firstMessageSent, setFirstMessageSent] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = async(text: string) => {
+  const handleSend = async (text: string) => {
     if (!firstMessageSent) setFirstMessageSent(true);
 
     const userMessage: Message = {
@@ -24,52 +24,89 @@ const ChatPage: React.FC = () => {
       content: text,
       role: "user",
     };
-
     setMessages((prev) => [...prev, userMessage]);
     scrollToBottom();
 
     try {
       const res = await fetch("http://localhost:8000/ask", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input: text }),
       });
 
       if (!res.ok) throw new Error("Erro ao obter resposta do servidor");
 
       const data = await res.json();
+      const { answer, refs, images } = data; // destruturação correta
 
-      // A resposta vem como [resposta, contexto]
-      const [answer, context] = data.response;
+      // Mensagem principal do bot
+      if (answer) {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), content: answer, role: "assistant" },
+        ]);
+      }
 
-      const botMessage: Message = {
-        id: crypto.randomUUID(),
-        content: answer,
-        role: "assistant",
-      };
+      // Mensagem de referências
+      if (refs) {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), content: `📚 Fontes:\n${refs}`, role: "assistant" },
+        ]);
+      }
 
-      setMessages((prev) => [...prev, botMessage]);
-
-      // (Opcional) Exibir o contexto abaixo da resposta
-      if (context) {
-        const contextMessage: Message = {
-          id: crypto.randomUUID(),
-          content: `*Contexto usado:*\n${context}`,
-          role: "assistant",
-        };
-        setMessages((prev) => [...prev, contextMessage]);
+      // Mensagem de imagens
+      if (images) {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), content: `🖼️ Imagens relacionadas:\n${images}`, role: "assistant" },
+        ]);
       }
 
     } catch (error) {
       console.error(error);
-      const errorMessage: Message = {
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), content: "Erro ao se comunicar com o servidor.", role: "assistant" },
+      ]);
+    } finally {
+      scrollToBottom();
+    }
+  };
+
+  // Para LLM direta, se quiser usar futuramente
+  const handleLLMSend = async (text: string) => {
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      content: text,
+      role: "user",
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    scrollToBottom();
+
+    try {
+      const res = await fetch("http://localhost:8000/llm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: text }),
+      });
+
+      if (!res.ok) throw new Error("Erro ao obter resposta da LLM");
+
+      const data = await res.json();
+      const botMessage: Message = {
         id: crypto.randomUUID(),
-        content: "Erro ao se comunicar com o servidor.",
+        content: data.answer,
         role: "assistant",
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, botMessage]);
+
+    } catch (error) {
+      console.error(error);
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), content: "Erro ao se comunicar com a LLM.", role: "assistant" },
+      ]);
     } finally {
       scrollToBottom();
     }

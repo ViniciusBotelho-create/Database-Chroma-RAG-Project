@@ -1,161 +1,162 @@
-import os
+import torch
 from typing import TypedDict
 from pymilvus import connections, Collection
-from sentence_transformers import SentenceTransformer
-from openai import OpenAI
+from transformers import AutoModel, AutoTokenizer
 from langgraph.graph import StateGraph, END
+import ollama
 
-# ---- Conexão Milvus ----
-connections.connect("default", host="localhost", port="19530")
-text_collection = Collection("rag_embeddings_milvus")
-image_collection = Collection("image_descriptions")
+# ========================
+# CONFIGURAÇÃO DO MILVUS
+# ========================
+connections.connect("default", host="127.0.0.1", port="19530")
+COLLECTION_NAME = "rag_embeddings_milvus"
+collection = Collection(COLLECTION_NAME)
 
-# ---- Modelos de embedding ----
-embedding_model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+# ========================
+# EMBEDDINGS
+# ========================
+model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
 
-# ---- Estado compartilhado ----
+def get_embedding(text: str):
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+    with torch.no_grad():
+        outputs = model(**inputs)
+        embeddings = outputs.last_hidden_state.mean(dim=1)
+    return embeddings[0].numpy().tolist()
+
+# ========================
+# ESTADO COMPARTILHADO
+# ========================
 class ChatState(TypedDict):
     input: str
     query: str
     context: str
-    image_context: str
+    refs: str
+    images: str
     answer: str
-    validation: str
-    show_context: str
 
-# ---- Agentes ----
+# ========================
+# AGENTE 1: RECUPERA TEXTO
+# ========================
 def retrieve_text_context(state: ChatState) -> ChatState:
-    query_embedding = embedding_model.encode(state["input"]).tolist()
-    text_collection.load()
-    results = text_collection.search(
-        data=[query_embedding],
+    query = state["input"]
+    query_emb = get_embedding(query)
+
+    collection.load()
+    results = collection.search(
+        data=[query_emb],
         anns_field="embedding",
-        param={"metric_type": "L2", "params": {"nprobe": 10}},
-        limit=5,
-        output_fields=["text", "source"]
+        param={"metric_type": "IP", "params": {"nprobe": 10}},
+        limit=10,
+        output_fields=["source_file", "source_url", "chunk_index", "chunk_text"]
     )
 
-    context_parts = []
-    show_context = []
-    for hit in results[0]:
-        context_parts.append(hit.entity.get("text"))
-        show_context.append(f"Documento: {hit.entity.get('source')}")
+    contexts, refs = [], []
+    for r in results[0]:
+        chunk_text = r.entity.get("chunk_text")
+        source = r.entity.get("source_file")
+        url = r.entity.get("source_url")
+        contexts.append(chunk_text)
+        refs.append(f"📄 {source} | 🔗 {url}")
 
-    return {
-        **state,
-        "context": "\n\n".join(context_parts),
-        "show_context": "\n\n".join(show_context)
-    }
+    return {**state, "query": query, "context": "\n\n".join(contexts), "refs": "\n".join(refs)}
 
+# ========================
+# AGENTE 2: RECUPERA IMAGENS
+# ========================
 def retrieve_image_context(state: ChatState) -> ChatState:
-    query_embedding = embedding_model.encode(state["input"]).tolist()
+    query = state["input"]
+    query_emb = get_embedding(query)
+
+    image_collection = Collection("image_descriptions")
     image_collection.load()
+
     results = image_collection.search(
-        data=[query_embedding],
+        data=[query_emb],
         anns_field="embedding",
-        param={"metric_type": "L2", "params": {"nprobe": 10}},
+        param={"metric_type": "COSINE", "params": {"nprobe": 10}},
         limit=5,
-        output_fields=["url", "titles", "texts"]
+        output_fields=["id", "url", "category", "titles", "texts"]
     )
 
-    image_contexts = []
-    image_links = []
-    for hit in results[0]:
-        image_contexts.append(f"{hit.entity.get('titles')} {hit.entity.get('texts')}")
-        image_links.append(hit.entity.get("url"))
+    images = []
+    for r in results[0]:
+        url = r.entity.get("url")
+        titles = r.entity.get("titles")
+        texts = r.entity.get("texts")
+        category = r.entity.get("category")
+        score = r.distance
+        images.append(
+            f"🖼️ {category} | {titles} | {texts[:80]}... ({url}) [score={score:.3f}]"
+        )
 
-    show_context = state.get("show_context", "")
-    if image_links:
-        show_context += "\n\nImagens relevantes:\n" + "\n".join(image_links)
-    else:
-        show_context += "\n\nNenhuma imagem relevante encontrada."
+    return {**state, "images": "\n".join(images)}
 
-    return {
-        **state,
-        "image_context": "\n\n".join(image_contexts),
-        "show_context": show_context
-    }
-
+# ========================
+# AGENTE 3: GERA RESPOSTA
+# ========================
 def generate_answer(state: ChatState) -> ChatState:
     prompt = f"""
-Você é um assistente técnico especialista em EIA/RIMA. Use apenas os contextos fornecidos para responder.
+Você é um assistente técnico especializado em licenciamento ambiental (EIA/RIMA).
+Responda à pergunta do usuário **usando apenas o contexto fornecido**.
 
 Contexto textual:
 {state['context']}
 
-Contexto de imagens:
-{state['image_context']}
+Contexto visual (descrições de imagens):
+{state['images']}
 
 Pergunta:
-{state['input']}
+{state['query']}
 """
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
+    response = ollama.chat(
+        model="mistral:7b",
         messages=[
-            {"role": "system", "content": "Assistente técnico ambiental especializado em EIA/RIMA."},
+            {"role": "system", "content": "Você é um assistente técnico ambiental especializado em EIA/RIMA."},
             {"role": "user", "content": prompt}
-        ],
-        temperature=0.2,
-        max_tokens=800
+        ]
     )
+    return {**state, "answer": response["message"]["content"]}
 
-    return {**state, "answer": response.choices[0].message.content.strip()}
-
-def AnswerValidatorAgent(state: ChatState) -> ChatState:
-    validation_prompt = f"""
-Você é um validador técnico. Avalie a resposta de um assistente sobre EIA/RIMA.
-
-Contexto textual:
-{state['context']}
-
-Contexto de imagens:
-{state['image_context']}
-
-Pergunta:
-{state['input']}
-
-Resposta do assistente:
-{state['answer']}
-
-Avalie se a resposta está correta e baseada no contexto. Se sim, responda "VALIDADO". Caso contrário, explique.
-"""
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Validador técnico de respostas."},
-            {"role": "user", "content": validation_prompt}
-        ],
-        temperature=0,
-        max_tokens=300
-    )
-
-    return {**state, "validation": response.choices[0].message.content.strip()}
-
-# ---- Grafo ----
+# ========================
+# GRAFO MULTIAGENTE
+# ========================
 builder = StateGraph(ChatState)
 builder.add_node("text_retriever", retrieve_text_context)
 builder.add_node("image_retriever", retrieve_image_context)
-builder.add_node("chat", generate_answer)
-builder.add_node("validator", AnswerValidatorAgent)
+builder.add_node("answer_generator", generate_answer)
 
 builder.set_entry_point("text_retriever")
 builder.add_edge("text_retriever", "image_retriever")
-builder.add_edge("image_retriever", "chat")
-builder.add_edge("chat", "validator")
-builder.add_edge("validator", END)
+builder.add_edge("image_retriever", "answer_generator")
+builder.add_edge("answer_generator", END)
 
 graph = builder.compile()
 
-# ---- Função para chamar o grafo ----
-def get_response(query: str):
+# ========================
+# FUNÇÕES PÚBLICAS
+# ========================
+def get_response(user_input: str) -> dict:
     state = {
-        "input": query,
-        "query": query,
+        "input": user_input,
+        "query": "",
         "context": "",
-        "image_context": "",
-        "answer": "",
-        "validation": "",
-        "show_context": ""
+        "refs": "",
+        "images": "",
+        "answer": ""
     }
     result = graph.invoke(state)
-    return result["answer"], result["show_context"], result["validation"]
+    return result
+
+def ask_llm_direct(user_input: str) -> str:
+    """Pergunta direto para a LLM, sem RAG"""
+    response = ollama.chat(
+        model="mistral:7b",
+        messages=[
+            {"role": "system", "content": "Você é um assistente técnico ambiental especializado em EIA/RIMA."},
+            {"role": "user", "content": user_input}
+        ]
+    )
+    return response["message"]["content"]
