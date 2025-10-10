@@ -34,7 +34,7 @@ class ChatState(TypedDict):
     query: str
     context: str
     refs: str
-    images: str
+    images: list[dict]
     answer: str
 
 # ========================
@@ -83,16 +83,17 @@ def retrieve_image_context(state: ChatState) -> ChatState:
 
     images = []
     for r in results[0]:
-        url = r.entity.get("url")
-        titles = r.entity.get("titles")
-        texts = r.entity.get("texts")
-        category = r.entity.get("category")
-        score = r.distance
-        images.append(
-            f"🖼️ {category} | {titles} | {texts[:80]}... ({url}) [score={score:.3f}]"
-        )
+        image_data = {
+            "id": r.entity.get("id"),
+            "url": r.entity.get("url"),
+            "title": r.entity.get("titles"),
+            "text": r.entity.get("texts"),
+            "category": r.entity.get("category"),
+            "score": r.distance
+        }
+        images.append(image_data)
 
-    return {**state, "images": "\n".join(images)}
+    return {**state, "images": images}
 
 # ========================
 # AGENTE 3: GERA RESPOSTA
@@ -148,7 +149,12 @@ def get_response(user_input: str) -> dict:
         "answer": ""
     }
     result = graph.invoke(state)
-    return result
+    return {
+        "answer": result.get("answer", ""),
+        "refs": result.get("refs", ""),
+        "images": result.get("images", []),  # <-- lista, não string
+    }
+
 
 def ask_llm_direct(user_input: str) -> str:
     """Pergunta direto para a LLM, sem RAG"""

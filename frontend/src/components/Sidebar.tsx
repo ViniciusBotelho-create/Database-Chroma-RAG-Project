@@ -1,74 +1,48 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Sidebar.css";
-import { useTheme } from "../hooks/useTheme";
-import { useNavigate } from "react-router-dom";
-import {
-  FiMenu,
-  FiHome,
-  FiMessageSquare,
-  FiSettings,
-  FiSun,
-  FiMoon,
-} from "react-icons/fi";
+import { Home, MessageCircle, Settings } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    setIsTouchDevice(isTouch);
-  }, []);
-
-  const handleToggle = () => setIsOpen((prev) => !prev);
-
-  const handleMouseEnter = () => {
-    if (!isTouchDevice) setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (!isTouchDevice) setIsOpen(false);
-  };
+    document.body.classList.toggle("sidebar-expanded", isExpanded);
+  }, [isExpanded]);
 
   return (
-    <div
-  className={`sidebar ${isOpen ? "open" : ""}`}
-  onMouseEnter={handleMouseEnter}
-  onMouseLeave={handleMouseLeave}
->
-  <div className="top-section">
-    <button className="icon-button" onClick={handleToggle}>
-      <FiMenu size={22} />
-    </button>
+    <aside
+      className={`sidebar ${isExpanded ? "expanded" : ""}`}
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
+    >
+      <div className="sidebar-content">
+        <Link
+          to="/"
+          className={`sidebar-item ${location.pathname === "/" ? "active" : ""}`}
+        >
+          <Home size={22} />
+          {isExpanded && <span>Início</span>}
+        </Link>
 
-    <div className="nav-item" onClick={() => navigate("/")}>
-      <FiHome size={20} />
-      <span className="nav-label">Início</span>
-    </div>
+        <Link
+          to="/chat"
+          className={`sidebar-item ${location.pathname === "/chat" ? "active" : ""}`}
+        >
+          <MessageCircle size={22} />
+          {isExpanded && <span>Chat</span>}
+        </Link>
 
-    <div className="nav-item" onClick={() => navigate("/chat")}>
-      <FiMessageSquare size={20} />
-      <span className="nav-label">Chat</span>
-    </div>
-
-    <div className="nav-item" onClick={toggleTheme}>
-      {theme === "dark" ? <FiSun size={20} /> : <FiMoon size={20} />}
-      <span className="nav-label">
-        Tema {theme === "dark" ? "Claro" : "Escuro"}
-      </span>
-    </div>
-  </div>
-
-  <div className="bottom-section">
-    <div className="nav-item">
-      <FiSettings size={20} />
-      <span className="nav-label"></span>
-    </div>
-  </div>
-</div>
-
+        <Link
+          to="/config"
+          className={`sidebar-item ${location.pathname === "/config" ? "active" : ""}`}
+        >
+          <Settings size={22} />
+          {isExpanded && <span>Configurações</span>}
+        </Link>
+      </div>
+    </aside>
   );
 };
 

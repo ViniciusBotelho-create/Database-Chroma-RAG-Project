@@ -1,17 +1,36 @@
 .chat-window {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  background-color: #ffffff;
+}
+
+.chat-content .chat-window {
   height: calc(100vh - 100px);
   overflow-y: auto;
   padding: 20px;
   background-color: var(--bg-color);
   color: var(--text-color);
   scrollbar-width: thin;
+  display: flex;
+  justify-content: center;
+  /* centraliza a coluna interna */
+  box-sizing: border-box;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE e Edge antigos */
 }
 
-.chat-window::-webkit-scrollbar {
+/* scrollbar webkit (opcional) */
+.chat-content .chat-window::-webkit-scrollbar {
   width: 6px;
+  display: none;
+  /* Chrome, Safari e Opera */
 }
 
-.chat-window::-webkit-scrollbar-thumb {
+.chat-content .chat-window::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 6px;
 }
@@ -26,11 +45,76 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* --- Evita corte de mensagens longas --- */
+.message-bubble {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+/* Links dentro das mensagens */
 .message-bubble a {
   color: #0077cc;
   text-decoration: underline;
-  word-break: break-all;
+  word-break: break-word;
 }
 
+/* Container central das mensagens (coluna centralizada) */
+/* === [1] Limita largura da coluna central e centraliza === */
+/* === [1] Limita largura da coluna central e centraliza === */
+.messages-container {
+  max-width: 900px;
+  /* <-- controla o tamanho total da "coluna de conversa" */
+  width: 100%;
+  margin: 0 auto;
+  /* centraliza a coluna no meio da tela */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 20px 16px 28px 16px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
+}
 
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+  display: none;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-container:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.25);
+  /* só visível ao rolar */
+}
+
+/* Mantém imagens dentro das bolhas responsivas */
+.messages-container img,
+.message-bubble img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.messages-container>div:last-child {
+  margin-bottom: 16px;
+}
+
+/* Evita barra global no body */
+body {
+  overflow: hidden;
+}

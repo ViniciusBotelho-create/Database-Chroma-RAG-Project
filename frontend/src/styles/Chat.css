@@ -1,27 +1,228 @@
 .chat-page {
   display: flex;
   height: 100vh;
-  overflow: hidden; /* Impede scroll geral */
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.chat-window-container {
+.chat-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100vh;
   background-color: var(--bg-color);
-  color: var(--text-color);
-  overflow: hidden; /* Remove scroll lateral */
-  font-family: 'Segoe UI', sans-serif;
+  position: relative;
 }
 
-/* Estilização da janela de mensagens */
+/* Header topo com toggle */
+.chat-header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background-color: var(--bg-color);
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+/* Intro (quando não tem mensagens) */
+.chat-intro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.chat-intro-text {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+/* Janela de mensagens */
 .chat-window {
   flex: 1;
-  overflow-y: scroll;
-  padding: 20px;
-  scrollbar-width: none; /* Firefox */
+  overflow-y: auto;
+  /* removi padding aqui porque agora quem controla padding é .messages-container */
+  padding: 0;
+  -webkit-overflow-scrolling: touch;
+  /* melhor scroll em iOS */
+  scrollbar-width: none;
+  /* Firefox - oculta a barra */
+  -ms-overflow-style: none;
+  /* IE 10+ - oculta a barra */
+}
+/* Webkit browsers: remove visual da scrollbar, mantém funcionalidade */
+.chat-window::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+.chat-window::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+.chat-window::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.chat-window::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+/* Rodapé fixo */
+.chat-footer {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--bg-color);
+  gap: 12px;
+  flex-shrink: 0;
 }
+
+/* Toggle */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #888;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+.switch input:checked + .slider {
+  background-color: #3fa86b;
+}
+.switch input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* ------------- ANIMAÇÃO SUAVE - TELA INICIAL DO CHAT ------------- */
+/* Aplica apenas quando a página está no estado "intro" (antes da 1ª mensagem) */
+/* Coloque este bloco no final de Chat.css */
+
+/* container da intro (já existe .chat-intro) — anima levemente a entrada do bloco */
+.chat-intro {
+  /* garante o alinhamento e evita layout shift */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  /* animação do container: pequena subida + fade */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: chatIntroContainer 650ms cubic-bezier(.2, .9, .3, 1) both;
+  will-change: transform, opacity;
+}
+
+/* texto principal — surge primeiro, com leve delay */
+.chat-intro .chat-intro-text {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: chatIntroText 600ms ease-out 120ms both;
+  will-change: transform, opacity;
+}
+
+/* input central (PromptInput) - usa a classe .center (já provida pelo componente) */
+/* animamos apenas .prompt-input.center para garantir que não afete o input do rodapé */
+.chat-intro .prompt-input.center {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: chatIntroInput 700ms cubic-bezier(.2, .9, .3, 1) 340ms both;
+  will-change: transform, opacity;
+}
+
+/* keyframes */
+@keyframes chatIntroContainer {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chatIntroText {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chatIntroInput {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Preferências de redução de movimento (acessibilidade): desliga animações */
+@media (prefers-reduced-motion: reduce) {
+
+  .chat-intro,
+  .chat-intro .chat-intro-text,
+  .chat-intro .prompt-input.center {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ------------------ SIDEBAR INTERAÇÃO ------------------ */
+
+.chat-wrapper {
+  width: 100%;
+  height: 100%;
+  transition: margin-left 0.3s ease;
+  margin-left: 72px;
+  /* largura padrão da sidebar retraída */
+}
+
+.sidebar.expanded~#root .chat-wrapper,
+body.sidebar-expanded .chat-wrapper {
+  margin-left: 220px;
+  /* desloca tudo suavemente quando sidebar abre */
+}
+
+/* ou via classe aplicada no body */

@@ -1,0 +1,27 @@
+.app-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background: var(--background);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+  padding: 1.5rem;
+}
+
+/* caso queira que o conteúdo "acompanhe" o expandir da sidebar */
+.app-container.sidebar-expanded .app-main {
+  margin-left: 260px;
+  /* largura total quando expandida */
+}
+
+.app-container.sidebar-collapsed .app-main {
+  margin-left: 64px;
+  /* largura da rail */
+}

@@ -1,23 +1,246 @@
 .message-bubble {
-  max-width: 49%;
-  margin: 12px auto;
-  display: flex;
+  max-width: 72%;
+  margin: 8px 0;
   padding: 12px;
-  border-radius: 25px;
-  line-height: 1.6;
+  border-radius: 18px;
+  line-height: 1.5;
   font-size: 16px;
   white-space: pre-wrap;
   word-wrap: break-word;
   transition: background 0.3s ease;
+  box-sizing: border-box;
+  width: fit-content;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
+/* Usuário (direita) */
 .message-bubble.user {
-  justify-content: flex-end;
-  background-color: #2F4F4F;
-  color: #000;
-  border-top-right-radius: 0;
+  align-self: flex-end;
+  background-color: #2f4f4f;
+  color: #fff;
+  border-top-right-radius: 6px;
+  margin-right: 60px;
+  margin-left: 80px;
+}
+
+/* Assistente (esquerda) */
+.message-bubble.assistant {
+  align-self: flex-start;
+  background-color: var(--message-bg);
+  color: var(--text-color);
+  border-top-left-radius: 6px;
+  margin-left: 60px;
+  margin-right: 80px;
 }
 
 .bubble-content {
   width: 100%;
+}
+
+/* opcional: sombra sutil para dar profundidade */
+.message-bubble {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* ==== GRID DE IMAGENS ==== */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-item {
+  text-align: center;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f7f7f7;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.image-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.image-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.image-title {
+  font-size: 13px;
+  color: #555;
+  margin-top: 4px;
+  padding: 2px 6px;
+  word-break: break-word;
+}
+
+/* === BOX para imagens (visual consistente com PDF box) === */
+.images-box {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--message-bg);
+  /* adapta ao tema */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.images-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+/* grid de thumbs */
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.img-thumb {
+  display: block;
+  width: 100%;
+  height: 96px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+}
+
+.img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ==== BLOCOS DE PDF ==== */
+.pdf-toggle {
+  margin-top: 10px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 10px;
+  background: #f8f8f8;
+  padding: 8px;
+}
+
+.pdf-toggle summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #2f4f4f;
+  list-style: none;
+}
+
+.pdf-toggle[open] summary {
+  margin-bottom: 6px;
+}
+
+.pdf-list a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.pdf-list a:hover {
+  text-decoration: underline;
+}
+
+/* === PDF acordeão box === */
+.pdf-box {
+  margin-top: 12px;
+  border-radius: 10px;
+  padding: 8px;
+  background: var(--message-bg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.pdf-summary {
+  font-weight: 600;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.pdf-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.pdf-link {
+  color: var(--link-color, #2a7ae2);
+  text-decoration: none;
+}
+
+.pdf-actions .btn {
+  margin-left: 8px;
+}
+
+/* LIGHTBOX (simples) */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.lightbox-inner {
+  position: relative;
+  max-width: 92vw;
+  max-height: 88vh;
+}
+
+.lightbox-inner img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* adaptações para tema claro — você tem variáveis; aqui um fallback */
+:root {
+  --message-bg: #ffffff;
+  --text-color: #222;
+}
+
+[data-theme="dark"] .message-bubble.assistant,
+.message-bubble.assistant.dark {
+  --message-bg: #222428;
+  --text-color: #e8e8e8;
+}
+
+/* responsivo */
+@media (max-width: 640px) {
+  .images-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .img-thumb {
+    height: 84px;
+  }
 }

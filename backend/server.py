@@ -17,7 +17,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -51,7 +51,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,21 +66,21 @@ class Question(BaseModel):
 # ========================
 # ENDPOINTS
 # ========================
+import traceback
+
 @app.post("/ask")
 async def ask_question(question: Question):
     try:
         response = get_response(question.input)
-        return {"answer": response["answer"], "refs": response["refs"], "images": response["images"]}
+        return {
+            "answer": response.get("answer", "⚠️ Não foi possível gerar uma resposta."),
+            "refs": response.get("refs", []),
+            "images": response.get("images", []),
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/llm")
-async def ask_llm(question: Question):
-    try:
-        response = ask_llm_direct(question.input)
-        return {"answer": response}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print("===== ERRO NO /ask =====")
+        traceback.print_exc()   # mostra stack trace no terminal
+        raise HTTPException(status_code=500, detail=f"Erro no /ask: {str(e)}")
 
 
 @app.post("/llm")

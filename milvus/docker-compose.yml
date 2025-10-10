@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   etcd:
-    image: bitnami/etcd:latest
+    image: milvusdb/etcd:latest
     container_name: milvus-etcd
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes

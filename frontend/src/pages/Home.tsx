@@ -1,7 +1,7 @@
+// src/pages/Home.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import Sidebar from "../components/Sidebar";
 import "../styles/Home.css";
 
 const Home: React.FC = () => {
@@ -19,7 +19,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-container">
-      <Sidebar />
       <main className="home-content">
         <motion.div
           className="welcome-card"
@@ -56,18 +55,21 @@ const Home: React.FC = () => {
               "Quais documentos são exigidos no licenciamento prévio?",
               "Quando um RIMA é necessário e como elaborá-lo?",
             ].map((text, index) => (
-<motion.div
-  className="example-card"
-  key={index}
-  variants={fadeInUp}
-  initial="hidden"
-  animate="visible"
-  whileHover={{ scale: 1.02, x: 6, boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)" }}
-  transition={{ delay: 0.7 + index * 0.2, duration: 0.3 }}
->
-  <p>{text}</p>
-</motion.div>
-
+              <motion.div
+                className="example-card"
+                key={index}
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
+                whileHover={{
+                  scale: 1.02,
+                  x: 6,
+                  boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
+                }}
+                transition={{ delay: 0.7 + index * 0.2, duration: 0.3 }}
+              >
+                <p>{text}</p>
+              </motion.div>
             ))}
           </div>
         </motion.div>
