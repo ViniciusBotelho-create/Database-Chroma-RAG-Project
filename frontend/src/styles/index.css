@@ -8,3 +8,35 @@ body,
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--background);
 }
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+html,
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+body {
+  margin: 0 !important;
+  /* Override do navegador */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.sidebar-open .home-container,
+body.sidebar-open .chat-page {
+  transform: translateX(160px);
+  transition: transform 0.3s ease;
+}
+
+.home-container,
+.chat-page {
+  transition: transform 0.3s ease;
+}

@@ -4,9 +4,8 @@
   top: 0;
   bottom: 0;
   width: 72px;
-  background: rgba(30, 30, 30, 0.55);
-  backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,8 +15,6 @@
 
 .sidebar.expanded {
   width: 220px;
-  background: rgba(30, 30, 30, 0.85);
-  backdrop-filter: blur(16px);
 }
 
 .sidebar-content {
@@ -29,12 +26,15 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #ddd;
+  color: var(--text-color);
   padding: 12px 18px;
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.25s ease;
   margin: 8px 10px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
 }
 
 .sidebar-item:hover {
@@ -43,19 +43,68 @@
 
 .sidebar-item.active {
   background: rgba(255, 255, 255, 0.15);
-  color: #fff;
 }
 
-.sidebar-item span {
-  font-size: 15px;
+.theme-toggle {
+  margin-top: 40px;
+}
+
+/* --- animação suave do texto da sidebar --- */
+
+.sidebar-label {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
   white-space: nowrap;
+  pointer-events: none;
 }
 
-body.light .sidebar {
-  background: rgba(255, 255, 255, 0.4);
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+.sidebar.expanded .sidebar-label.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
-body.light .sidebar.expanded {
-  background: rgba(255, 255, 255, 0.6);
+/* (opcional) animação em cascata */
+.sidebar-item:nth-child(1) .sidebar-label {
+  transition-delay: 0.05s;
+}
+
+.sidebar-item:nth-child(2) .sidebar-label {
+  transition-delay: 0.10s;
+}
+
+.sidebar-item:nth-child(3) .sidebar-label {
+  transition-delay: 0.15s;
+}
+
+.sidebar-item:nth-child(4) .sidebar-label {
+  transition-delay: 0.20s;
+}
+
+/* 🔥 Esconde o texto E o botão de tema quando retraída */
+.sidebar:not(.expanded) .theme-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 🔥 Quando retraída, o item ativo perde o destaque */
+.sidebar:not(.expanded) .sidebar-item.active {
+  background: transparent;
+}
+
+.sidebar:not(.expanded) .sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar fechada → texto some instantaneamente */
+.sidebar:not(.expanded) span {
+  opacity: 0 !important;
+  transition: none !important;
+}
+
+/* Sidebar aberta → texto aparece suave */
+.sidebar.expanded span {
+  opacity: 1;
+  transition: opacity 0.2s ease-out;
 }

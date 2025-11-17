@@ -169,7 +169,7 @@ const ChatPage: React.FC = () => {
         ...prev,
         {
           id: crypto.randomUUID(),
-          content: "⚠️ Erro ao se comunicar com o servidor.",
+          content: "Erro ao se comunicar com o servidor.",
           role: "assistant",
         },
       ]);
@@ -177,6 +177,7 @@ const ChatPage: React.FC = () => {
   };
 
   // -------------------- RENDER --------------------
+
   return (
     <div className={`chat-page`}>
       <div className="chat-wrapper">
